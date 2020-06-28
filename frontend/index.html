@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="normalize.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <meta charset="UTF-8">
+    <link>
+    <title>Basic app</title>
+</head>
+<body>
+
+<form class = "form" name = "request">
+    <div class = "ui">
+    <div class = "block a">
+        <div class = "text">Type filename</div>
+        <input class = "inp a" type="text" name = "path" placeholder="value">
+    </div>
+    <div class = "block">
+        <div class = "text ">Type n</div>
+        <input class = "inp b" type="number"  name = "count" placeholder="value">
+    </div>
+        <div id = "progress"></div>
+</div>
+    <div class = "output">
+        <div class = "title">Output:</div>
+        <div class = "words"></div>
+    </div>
+    <button type = "submit" id = "submit" class = "button">APPLY</button>
+</form>
+<script src="socket.io-client/dist/socket.io.js"></script>
+<script>
+    var socket = io.connect('http://localhost:3000');
+    socket.on('chat message', function(msg){
+        console.log('message: ' + msg);
+        var progress = document.getElementById("progress");
+        progress.textContent = "";
+        progress.textContent = Math.round(parseFloat(msg)*100) + "%";
+    });
+</script>
+<script>
+
+    document.getElementById("submit").addEventListener("click", function (e) {
+        e.preventDefault();
+        let registerForm = document.forms["request"];
+        let userName = registerForm.elements["path"].value;
+        let userAge = registerForm.elements["count"].value;
+        let user = JSON.stringify({userName: userName, userAge: userAge});
+        let request = new XMLHttpRequest();
+        request.open("POST", "/user", true);
+        request.setRequestHeader("Content-Type", "application/json");
+        request.addEventListener("load", function () {
+            let receivedUser = JSON.parse(request.response);
+            if (Object.keys(receivedUser).length == 1) {
+                console.log(String(receivedUser[0].condition));
+            } else {
+                for (let i = 1; i < receivedUser.length; i++) {
+                    $(".words").append("<div>" + String(receivedUser[i].word) + " " + String(receivedUser[i].cnt) + "</div>");
+                }
+            }
+        });
+        request.send(user);
+    });
+
+
+</script>
+</body>
+</html>
