@@ -15,7 +15,7 @@
     "http": "0.0.1-security",
     "iconv": "^3.0.0",
     "mystem3": "^1.2.1",
-    "node-sass": "^4.14.1",
+    "node-sass": "^7.0.0",
     "progress-promise": "0.0.6",
     "request": "^2.88.2",
     "sass": "^1.26.8",
